@@ -20,7 +20,18 @@ def main():
                 running = False
 
         window.fill(colors.background)  
-        window.blit(ImageMenager.tabla, (27, 27))
+        window.blit(ImageMenager.tabla, (25, 25))
+        
+        for i in range(0, 8):
+            window.blit(ImageMenager.piece_black, (27 + i*14 + i*80, 31))
+        for i in range(0, 8):
+            window.blit(ImageMenager.piece_black, (27 + i*14 + i*80, 31+ 80 + 14))
+            
+        for i in range(0, 8):
+            window.blit(ImageMenager.piece_white, (27 + i*14 + i*80, 31 + 6*(80+14)))
+        for i in range(0, 8):
+            window.blit(ImageMenager.piece_white, (27 + i*14 + i*80, 31 + 7*(80+14)))
+            
         pygame.display.flip()  
 
         clock.tick(60) 
