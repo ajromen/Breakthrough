@@ -2,6 +2,7 @@ import pygame
 
 
 class ImageMenager:
+    
     @staticmethod
     def load_all(self):
         self.tabla = pygame.image.load("assets/tabla.png")
@@ -9,3 +10,10 @@ class ImageMenager:
         self.piece_black = pygame.image.load("assets/piece_black.png")
         self.piece_white_xl = pygame.image.load("assets/piece_white_xl.png")
         self.piece_black_xl = pygame.image.load("assets/piece_black_xl.png")
+        self.next = pygame.image.load("assets/next.png")
+        self.pvp = pygame.image.load("assets/pvp.png")
+        self.pvc = pygame.image.load("assets/pvc.png")   
+        self.start = pygame.image.load("assets/start.png")  
+    
+    def change_scale():
+        pass
