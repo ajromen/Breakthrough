@@ -1,7 +1,7 @@
 import pygame
 
-from utils.image_menager import ImageMenager
-from utils import colors
+from ui.image_menager import ImageMenager
+from ui import colors
 
 class Board:
     def __init__(self,window : pygame.Surface, board_size=8):

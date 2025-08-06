@@ -1,8 +1,8 @@
 import pygame
 
 from ui.input_handler import InputHandler
-from utils import colors
-from utils.image_menager import ImageMenager
+from ui import colors
+from ui.image_menager import ImageMenager
 
 
 class Menu():
@@ -63,10 +63,12 @@ class Menu():
         white = (147, 327)
         black = (147 +359, 327 )
         next = (81, 554)
-        white_rect = pygame.Rect(147, 327, 147, 147)
-        black_rect = pygame.Rect(147 + 359, 327, 147, 147)
+        white_rect = pygame.Rect(144, 318, 170, 170)
+        black_rect = pygame.Rect(144 + 359, 318, 170, 170)
         next_rect = pygame.Rect(83, 554, 635, 111)
         selected = 'white'
+        
+        
         
         font_50 = pygame.font.Font("assets/JetBrainsMono-Regular.ttf", 50)
         text_surface_50 = font_50.render("or", True, colors.selected)

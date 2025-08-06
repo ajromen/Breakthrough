@@ -1,7 +1,7 @@
 import pygame
 from game.game import Game
-from utils import colors
-from utils.image_menager import ImageMenager
+from ui import colors
+from ui.image_menager import ImageMenager
 from ui import menu
 
 pygame.init()
