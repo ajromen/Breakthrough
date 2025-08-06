@@ -21,8 +21,6 @@ def main():
     running = True
     while running:
         
-
-        
         
         props = ui.start_main()
         

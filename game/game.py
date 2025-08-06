@@ -8,4 +8,4 @@ class Game:
         self.board = board.Board(window)
     
     def display_board(self):
-        self.board.display()
+        self.board.display(self.player_color)

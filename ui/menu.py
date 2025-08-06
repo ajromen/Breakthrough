@@ -36,15 +36,37 @@ class Menu():
         pvp_rect = pygame.Rect(83, 256, 635, 111)
         pvc_rect = pygame.Rect(83, 256 + 159, 635, 111)
         running = True
+        selected = None
         while running:
-            clicked = self.checkQuit()
+            clicked = False
+            pygame.display.flip()  
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        clicked = True
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        if selected is None:
+                            continue
+                        return selected
+                    elif event.key == pygame.K_UP:
+                        selected = 'player'
+                    elif event.key == pygame.K_DOWN:
+                        selected = 'computer'
+                        
             self.window.fill(colors.background)  
             
             self.window.blit(ImageMenager.pvp, pos1) # type: ignore
             self.window.blit(ImageMenager.pvc, pos2) # type: ignore
             
+            if selected == 'player':
+                pygame.draw.rect(self.window, colors.highlight, pvp_rect, 2, border_radius=5)
+            elif selected == 'computer':
+                pygame.draw.rect(self.window, colors.highlight, pvc_rect, 2, border_radius=5)
             
-
+            
             if InputHandler.check_mouse_hover(InputHandler,pvp_rect):
                 pygame.draw.rect(self.window, colors.selected, pvp_rect, 2, border_radius=5)
                 if clicked:
@@ -66,8 +88,7 @@ class Menu():
         white_rect = pygame.Rect(144, 318, 170, 170)
         black_rect = pygame.Rect(144 + 359, 318, 170, 170)
         next_rect = pygame.Rect(83, 554, 635, 111)
-        selected = 'white'
-        
+        selected = 'white'        
         
         
         font_50 = pygame.font.Font("assets/JetBrainsMono-Regular.ttf", 50)
@@ -78,7 +99,24 @@ class Menu():
         
         running = True
         while running:
-            clicked = self.checkQuit()
+            clicked = False
+            
+            pygame.display.flip()  
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        clicked = True
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        return selected
+                    elif event.key == pygame.K_LEFT:
+                        selected = 'white'
+                    elif event.key == pygame.K_RIGHT:
+                        selected = 'black'
+            
+            
             self.window.fill(colors.background)  
             
             self.window.blit(ImageMenager.piece_white_xl, white) # type: ignore
@@ -86,10 +124,14 @@ class Menu():
             self.window.blit(ImageMenager.start, next) # type: ignore
             
             
-            self.window.blit(text_surface_50, (370, 367))
-            
-            
+            self.window.blit(text_surface_50, (370, 367))                        
             self.window.blit(text_surface_60, (256, 137))
+        
+            if(selected=='white'):
+                pygame.draw.rect(self.window, colors.highlight, white_rect, 2, border_radius=5)
+            else:
+                pygame.draw.rect(self.window, colors.highlight, black_rect, 2, border_radius=5)
+
 
             if InputHandler.check_mouse_hover(InputHandler,white_rect):
                 pygame.draw.rect(self.window, colors.highlight, white_rect, 2, border_radius=5)
