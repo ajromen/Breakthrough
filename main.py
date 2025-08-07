@@ -14,13 +14,12 @@ def main():
     window = pygame.display.set_mode(window_size, pygame.NOFRAME)
     pygame.display.set_caption("Breaktrough")
     clock = pygame.time.Clock()
-    ImageMenager.load_all(ImageMenager)
-    
+    ImageMenager.load_all()
+
     ui = menu.Menu(window)
     
     running = True
     while running:
-        
         
         props = ui.start_main()
         
@@ -35,6 +34,15 @@ def main():
                 if event.type == pygame.QUIT:
                     running = False
                     game_running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        do = ui.show_settings()
+                        if do == 'exit':
+                            return
+                        elif do == 'menu':
+                            game_running=False
+                            break
+                
                     
             game.display_board()
             
