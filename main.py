@@ -3,6 +3,7 @@ from game.game import Game
 from ui import colors
 from ui.image_menager import ImageMenager
 from ui import menu
+from ui.input_handler import InputHandler
 
 pygame.init()
 
@@ -28,32 +29,41 @@ def main():
         player_color = props['player_color']
         game = Game(opponent, dificulty, player_color, window)
         
-        game_running = True        
+        redraw_needed = True
+        turn = 'white'
+        game_running = True       
         while game_running:
+            clicked = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     game_running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    clicked = True
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         do = ui.show_settings()
+                        redraw_needed=True
                         if do == 'exit':
                             return
                         elif do == 'menu':
                             game_running=False
                             break
-                
-                    
-            game.display_board()
             
-            pygame.display.flip()  
-
-            clock.tick(30) 
+            if redraw_needed: 
+                game.display_board()
+                game.board.display_last_move()
+                pygame.display.flip()  
+                redraw_needed=False
                 
+            
+            if(turn=="white" and clicked):
+                row, col = InputHandler.get_square()
+                redraw_needed = game.check_legal_moves(row, col)
                 
-        
-        
-        
+            
+            clock.tick(30)
+                  
 
     pygame.quit()
     

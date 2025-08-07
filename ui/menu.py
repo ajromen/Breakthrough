@@ -68,11 +68,11 @@ class Menu():
                 pygame.draw.rect(self.window, colors.highlight, pvc_rect, 2, border_radius=5)
             
             
-            if InputHandler.check_mouse_hover(InputHandler,pvp_rect):
+            if InputHandler.check_mouse_hover(pvp_rect):
                 pygame.draw.rect(self.window, colors.selected, pvp_rect, 2, border_radius=5)
                 if clicked:
                     return 'player'
-            if InputHandler.check_mouse_hover(InputHandler,pvc_rect):
+            if InputHandler.check_mouse_hover(pvc_rect):
                 pygame.draw.rect(self.window, colors.selected, pvc_rect, 2, border_radius=5)
                 if clicked:
                     return 'computer'
@@ -112,7 +112,7 @@ class Menu():
             pygame.draw.ellipse(self.window, colors.highlight, (ellipse_x, ellipse_y, 25, 25))
 
             slider_rect = pygame.Rect(86+26, 470 + 42 + 5, 9 * 62 + 25, 25)
-            if InputHandler.check_mouse_hover(InputHandler, slider_rect) and clicked:
+            if InputHandler.check_mouse_hover(slider_rect) and clicked:
                 mouse_x, _ = pygame.mouse.get_pos()
                 dificulty = min(10, max(1, 1 + (mouse_x - 85) // 62))
         
@@ -162,12 +162,12 @@ class Menu():
                 pygame.draw.rect(self.window, colors.highlight, black_rect, 2, border_radius=5)
 
 
-            if InputHandler.check_mouse_hover(InputHandler,white_rect):
+            if InputHandler.check_mouse_hover(white_rect):
                 pygame.draw.rect(self.window, colors.selected, white_rect, 2, border_radius=5)
                 if clicked:
                     return 'white'
                     
-            if InputHandler.check_mouse_hover(InputHandler,black_rect):
+            if InputHandler.check_mouse_hover(black_rect):
                 pygame.draw.rect(self.window, colors.selected, black_rect, 2, border_radius=5)
                 if clicked:
                     return 'black'
@@ -210,12 +210,12 @@ class Menu():
             elif selected == 'exit':
                 pygame.draw.rect(self.window, colors.highlight, exit_btn, 2, border_radius=5)
             
-            if InputHandler.check_mouse_hover(InputHandler, menu_btn):
+            if InputHandler.check_mouse_hover( menu_btn):
                 pygame.draw.rect(self.window, colors.selected, menu_btn, 2, border_radius=5)
                 if clicked:
                     return 'menu'
             
-            if InputHandler.check_mouse_hover(InputHandler, exit_btn):
+            if InputHandler.check_mouse_hover( exit_btn):
                 pygame.draw.rect(self.window, colors.selected, exit_btn, 2, border_radius=5)
                 if clicked:
                     return 'exit'
