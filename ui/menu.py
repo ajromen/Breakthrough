@@ -1,5 +1,6 @@
 import pygame
 
+from ui.text_renderer import TextRenderer
 from ui.input_handler import InputHandler
 from ui import colors
 from ui.image_menager import ImageMenager
@@ -79,25 +80,52 @@ class Menu():
         return 'player'
     
     def choose_dificulty(self):
-        return 1
+        dificulty = 2
+        slider = (85, 470+42)
+        ellipse_y = 470 + 42+5
+                
+        while True:
+            clicked = False
+            pygame.display.flip()  
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        clicked = True
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        return dificulty
+                    elif event.key == pygame.K_LEFT:
+                        dificulty= max(1, dificulty - 1)
+                    elif event.key == pygame.K_RIGHT:
+                        dificulty = min(10, dificulty + 1)
+                        
+            self.window.fill(colors.background)
+            TextRenderer.render_text("Dificulty level", 60, colors.selected, (128, 262), self.window)
+            TextRenderer.render_text("seconds", 40, colors.muted, (313, 341), self.window)
+            
+            self.window.blit(ImageMenager.slider, slider) # type: ignore
+            
+            ellipse_x = 85 + 26 + (dificulty - 1) * 62
+            
+            pygame.draw.ellipse(self.window, colors.highlight, (ellipse_x, ellipse_y, 25, 25))
+
+            slider_rect = pygame.Rect(86+26, 470 + 42 + 5, 9 * 62 + 25, 25)
+            if InputHandler.check_mouse_hover(InputHandler, slider_rect) and clicked:
+                mouse_x, _ = pygame.mouse.get_pos()
+                dificulty = min(10, max(1, 1 + (mouse_x - 85) // 62))
+        
     
     def choose_color(self):
         white = (141, 402)
         black = (141 + 359, 402 )
         next = (81, 554)
-        white_rect = pygame.Rect(141, 393, 170, 170)
-        black_rect = pygame.Rect(141 + 359, 393, 170, 170)
+        white_rect = pygame.Rect(139, 392, 170, 170)
+        black_rect = pygame.Rect(139 + 359, 392, 170, 170)
         selected = None     
         
-        
-        font_50 = pygame.font.Font("assets/JetBrainsMono-Regular.ttf", 50)
-        text_surface_50 = font_50.render("or", True, colors.selected)
-        
-        font_60 = pygame.font.Font("assets/JetBrainsMono-Regular.ttf", 60)
-        text_surface_60 = font_60.render("Start as", True, colors.selected)
-        
-        running = True
-        while running:
+        while True:
             clicked = False
             
             pygame.display.flip()  
@@ -109,6 +137,8 @@ class Menu():
                         clicked = True
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
+                        if selected is None:
+                            continue
                         return selected
                     elif event.key == pygame.K_LEFT:
                         selected = 'white'
@@ -122,8 +152,9 @@ class Menu():
             self.window.blit(ImageMenager.piece_black_xl, black) # type: ignore
             
             
-            self.window.blit(text_surface_50, (364, 444))                        
-            self.window.blit(text_surface_60, (256, 240))
+            TextRenderer.render_text("Start as", 60 , colors.selected, (256, 240), self.window)
+            TextRenderer.render_text("or", 50, colors.selected, (364, 444), self.window)
+            
         
             if(selected=='white'):
                 pygame.draw.rect(self.window, colors.highlight, white_rect, 2, border_radius=5)
@@ -142,17 +173,6 @@ class Menu():
                     return 'black'
             
             
-        return selected
-    
-    def checkQuit(self):
-        pygame.display.flip()  
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    return True
-        return False
     
     def show_settings(self, ):
         clicked = False

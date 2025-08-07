@@ -12,6 +12,7 @@ class ImageMenager:
     start = None
     settings = None
     settings_no_shadow = None
+    slider = None
 
     @staticmethod
     def load_all():
@@ -26,3 +27,4 @@ class ImageMenager:
         ImageMenager.start = pygame.image.load("assets/start.png")
         ImageMenager.settings = pygame.image.load("assets/pause.png")
         ImageMenager.settings_no_shadow = pygame.image.load("assets/pause_no_shadow.png")
+        ImageMenager.slider = pygame.image.load("assets/slider.png")
