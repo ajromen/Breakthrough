@@ -35,17 +35,50 @@ class Board:
     def get_all_legal_moves(self, color):
         pass
     
-    def make_move(self, start_pos, end_pos):
-        pass
+    def make_move(self, row, col, player):
+        selected_row = self.last_selected[0] # type: ignore
+        selected_col = self.last_selected[1] # type: ignore
+        
+        to_check = (row,col)
+        
+        self.last_selected=None
+        
+        if self.last_moves.get(to_check, False): # type: ignore
+            self.board[row][col] = 1 if player == 'white' else 2
+            self.board[selected_row][selected_col] = 0  # type: ignore
+            return True
+        
+        return False
+        
+        
     
     def get_legal_moves(self, row, col, player):        
         pos = self.board[row][col]
+        moves = {}
         if  pos == 0:
             return
         if pos == 1 and player == "white":
-            return []
+            if row!=0 and self.board[row-1][col-1]!=1:# left
+                moves[(row-1,col-1)]=True
+                
+            if self.board[row][col-1]==0: # center
+                moves[(row,col-1)]=True
+                
+            if row!=7 and self.board[row+1][col-1]!=1:
+                moves[(row+1,col-1)]=True
+            
+            return moves
         if pos == 2 and player == 'black':
-            return []
+            if row!=0 and self.board[row-1][col+1]!=2:# left
+                moves[(row-1,col+1)]=True
+                
+            if self.board[row][col+1]==0: # center
+                moves[(row,col+1)]=True
+                
+            if row!=7 and self.board[row+1][col+1]!=2:
+                moves[(row+1,col+1)]=True
+            
+            return moves
         return
         
     def check_legal_moves(self, row, col, player):            
@@ -62,9 +95,10 @@ class Board:
             
             
     def display_given_moves(self,row,col,moves):
-        pygame.draw.rect(self.window, colors.selected, (26 + row * 94, 26 + col * 94, 94, 94), width=2, border_radius=5)
         for move in moves:
-            pass
+            pygame.draw.rect(self.window, colors.highlight, (25 + move[0] * 94, 25 + move[1] * 94, 96, 96), width=2, border_radius=0)
+        
+        pygame.draw.rect(self.window, colors.selected, (25 + row * 94, 25 + col * 94, 96, 96), width=2, border_radius=0)
         
     def display_last_move(self):
         if(self.last_selected is None):

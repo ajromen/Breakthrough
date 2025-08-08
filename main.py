@@ -30,16 +30,14 @@ def main():
         game = Game(opponent, dificulty, player_color, window)
         
         redraw_needed = True
-        turn = 'white'
         game_running = True       
         while game_running:
-            clicked = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     game_running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    clicked = True
+                    redraw_needed=game.check_click()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         do = ui.show_settings()
@@ -57,9 +55,7 @@ def main():
                 redraw_needed=False
                 
             
-            if(turn=="white" and clicked):
-                row, col = InputHandler.get_square()
-                redraw_needed = game.check_legal_moves(row, col)
+            
                 
             
             clock.tick(30)
