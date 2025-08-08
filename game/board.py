@@ -36,6 +36,10 @@ class Board:
         pass
     
     def make_move(self, row, col, player):
+        # if self.board[row][col]== 1 if player == 'white' else 2:
+        #     self.check_legal_moves(row,col,player)
+        #     return False
+        
         selected_row = self.last_selected[0] # type: ignore
         selected_col = self.last_selected[1] # type: ignore
         
