@@ -31,13 +31,14 @@ def main():
         
         redraw_needed = True
         game_running = True       
+        win = False
         while game_running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     game_running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    redraw_needed=game.check_click()
+                    redraw_needed, win = game.check_click()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         do = ui.show_settings()
@@ -53,9 +54,8 @@ def main():
                 game.board.display_last_move()
                 pygame.display.flip()  
                 redraw_needed=False
-                
-            
-            
+                if win:
+                    pass
                 
             
             clock.tick(30)

@@ -20,19 +20,31 @@ class Game:
         pass
     
     def check_click(self):
-        row, col = InputHandler.get_square()
+        row, col = InputHandler.get_square(self.board.flipped)
+        
+        print(row, col, self.board.board[row][col],self.board.flipped,self.turn)
+        
+        for i in range(8):
+            print(self.board.board[i])
+                    
+        
         if not self.piece_selected:
             self.piece_selected = self.board.check_legal_moves(row, col, self.turn)
-            return self.piece_selected
+            return self.piece_selected, None
         
         
         self.piece_selected=False
-        succ = self.board.make_move(row, col, self.turn)
+        succ, win = self.board.make_move(row, col, self.turn)
+        
+        if win:
+            return True, self.turn # ako je pobedio vraca True za uspesan potez i igraca koji je pobedio
+        
         if succ: 
             self.turn = "black" if self.turn == "white" else "white"
-            # if self.opponent=="player":
-            #     self.board.flipped= not self.board.flipped
-        return True
+            if self.opponent=="player":
+                self.board.flipped= not self.board.flipped
+                
+        return True, None
         
             
                 
