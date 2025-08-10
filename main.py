@@ -31,7 +31,7 @@ def main():
         
         redraw_needed = True
         game_running = True       
-        win = False
+        win = None
         while game_running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -39,6 +39,7 @@ def main():
                     game_running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     redraw_needed, win = game.check_click()
+                        
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         do = ui.show_settings()
@@ -55,7 +56,15 @@ def main():
                 pygame.display.flip()  
                 redraw_needed=False
                 if win:
-                    pass
+                    ui.show_winner(win)
+                    do = ui.show_settings(no_exit=True)
+                    
+                    if do == 'exit':
+                        running = False
+                        game_running = False
+                    elif do == 'menu':
+                        game_running = False
+                        break
                 
             
             clock.tick(30)

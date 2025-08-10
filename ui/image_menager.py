@@ -13,6 +13,9 @@ class ImageMenager:
     settings = None
     settings_no_shadow = None
     slider = None
+    win_shadow = None
+    white_wins = None
+    black_wins = None
 
     @staticmethod
     def load_all():
@@ -28,3 +31,6 @@ class ImageMenager:
         ImageMenager.settings = pygame.image.load("assets/pause.png").convert_alpha()
         ImageMenager.settings_no_shadow = pygame.image.load("assets/pause_no_shadow.png").convert_alpha()
         ImageMenager.slider = pygame.image.load("assets/slider.png").convert_alpha()
+        ImageMenager.win_shadow = pygame.image.load("assets/win_shadow.png").convert_alpha()
+        ImageMenager.white_wins = pygame.image.load("assets/white_wins.png").convert_alpha()
+        ImageMenager.black_wins = pygame.image.load("assets/black_wins.png").convert_alpha()

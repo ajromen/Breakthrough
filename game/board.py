@@ -59,7 +59,7 @@ class Board:
         if self.last_moves.get(to_check, False): # type: ignore
             self.board[row][col] = 1 if player == 'white' else 2
             self.board[selected_row][selected_col] = 0  # type: ignore
-            if row == 0 if player=='white' else 1:
+            if (player == 'white' and row == 0) or (player == 'black' and row == self.board_size - 1):
                 win = True 
             return True, win
         

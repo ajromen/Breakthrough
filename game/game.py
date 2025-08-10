@@ -22,10 +22,10 @@ class Game:
     def check_click(self):
         row, col = InputHandler.get_square(self.board.flipped)
         
-        print(row, col, self.board.board[row][col],self.board.flipped,self.turn)
+        # print(row, col, self.board.board[row][col],self.board.flipped,self.turn)
         
-        for i in range(8):
-            print(self.board.board[i])
+        # for i in range(8):
+        #     print(self.board.board[i])
                     
         
         if not self.piece_selected:

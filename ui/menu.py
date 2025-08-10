@@ -56,6 +56,10 @@ class Menu():
                         selected = 'player'
                     elif event.key == pygame.K_DOWN:
                         selected = 'computer'
+                    elif event.key == pygame.K_ESCAPE:
+                        do=self.show_settings()
+                        if do == 'exit':
+                            pygame.quit()
                         
             self.window.fill(colors.background)  
             
@@ -72,7 +76,7 @@ class Menu():
                 pygame.draw.rect(self.window, colors.selected, pvp_rect, 2, border_radius=5)
                 if clicked:
                     return 'player'
-            if InputHandler.check_mouse_hover(pvc_rect):
+            if InputHandler.check_mouse_hover(pvc_rect): # type: ignore
                 pygame.draw.rect(self.window, colors.selected, pvc_rect, 2, border_radius=5)
                 if clicked:
                     return 'computer'
@@ -174,14 +178,14 @@ class Menu():
             
             
     
-    def show_settings(self, ):
+    def show_settings(self, no_exit=False):
         clicked = False
-        menu_btn =  pygame.Rect(98+42, 230+44, 560, 111)
-        exit_btn = pygame.Rect(98+42, 230+192, 560, 111)
+        menu_btn =  pygame.Rect(88+42, 230+44, 560, 111)
+        exit_btn = pygame.Rect(88+42, 230+192, 560, 111)
         selected = None
         clock = pygame.time.Clock()
         
-        self.window.blit(ImageMenager.settings, (98, 230)) # type: ignore
+        self.window.blit(ImageMenager.settings, (88-10, 230)) # type: ignore
         while True:
             
             for event in pygame.event.get():
@@ -191,8 +195,8 @@ class Menu():
                     if event.button == 1:
                         clicked = True
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        return False
+                    if event.key == pygame.K_ESCAPE and not no_exit:
+                        return False 
                     elif event.key == pygame.K_RETURN:
                         if selected is None:
                             continue
@@ -202,7 +206,7 @@ class Menu():
                     elif event.key == pygame.K_DOWN:
                         selected = 'exit'
             
-            self.window.blit(ImageMenager.settings_no_shadow, (108, 233)) # type: ignore
+            self.window.blit(ImageMenager.settings_no_shadow, (98, 230)) # type: ignore
             
             
             if selected == 'menu':
@@ -222,3 +226,27 @@ class Menu():
                 
             clock.tick(60)
             pygame.display.flip()  
+            
+    def show_winner(self, winner):
+        if winner == 'white':
+            image = ImageMenager.white_wins
+        else:
+            image = ImageMenager.black_wins
+            
+        self.window.blit(ImageMenager.win_shadow, (88-10, 323-3)) # type: ignore
+        self.window.blit(image, (88, 323)) # type: ignore
+        while True:
+            clicked = False
+            pygame.display.flip()  
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        clicked = True
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE:
+                        return 'menu'
+
+        
+        
