@@ -1,14 +1,17 @@
 from game import board
 from ui.input_handler import InputHandler
+from game.ai import Ai
 
 class Game:
-    def __init__(self, opponent, dificulty, player_color,window):
+    def __init__(self, opponent, difficulty, player_color,window):
         self.opponent = opponent
-        self.dificulty = dificulty
+        self.difficulty = difficulty
         self.player_color = player_color
         self.board = board.Board(window, 8, player_color!='white')
         self.turn = 'white'
         self.piece_selected=False
+        ai_color = 'black' if player_color == 'white' else 'white'
+        self.ai = Ai(difficulty, ai_color) if self.opponent == "computer" else None
     
     def display_board(self):
         self.board.display(self.player_color)
@@ -18,6 +21,15 @@ class Game:
         
     def black_play(self):
         pass
+    
+    def flip_turn(self):
+        self.turn = "black" if self.turn == "white" else "white"
+        if self.opponent == "player":
+            self.board.flipped = not self.board.flipped
+    
+    def ai_play(self):
+        self.flip_turn()
+        return self.ai.make_move(self.board) if self.ai else (False, None)
     
     def check_click(self):
         row, col = InputHandler.get_square(self.board.flipped)
@@ -40,9 +52,7 @@ class Game:
             return True, self.turn # ako je pobedio vraca True za uspesan potez i igraca koji je pobedio
         
         if succ: 
-            self.turn = "black" if self.turn == "white" else "white"
-            if self.opponent=="player":
-                self.board.flipped= not self.board.flipped
+            self.flip_turn()
                 
         return True, None
         

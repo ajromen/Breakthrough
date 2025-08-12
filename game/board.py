@@ -45,7 +45,23 @@ class Board:
                     self.window.blit(ImageMenager.piece_black, (27 + j * 94, 31 + i * 94)) # type: ignore
                     
     def get_all_legal_moves(self, color):
-        pass
+        moves = {}
+        piece_code = 1 if color == 'white' else 2
+        for i in range(self.board_size):
+            for j in range(self.board_size):
+                if self.board[i][j] == piece_code:
+                    legal_moves = self.get_legal_moves(i, j, color)
+                    if legal_moves:
+                        moves.update(legal_moves)
+        return moves
+    
+    def quick_make_move(self,start_row, start_col, row, col, player):
+        self.board[row][col] = 1 if player == 'white' else 2
+        self.board[start_row][start_col] = 0  # type: ignore
+        win = False
+        if (player == 'white' and row == 0) or (player == 'black' and row == self.board_size - 1):
+            win = True 
+        return True, win
     
     def make_move(self, row, col, player):
         selected_row = self.last_selected[0] # type: ignore
@@ -54,14 +70,9 @@ class Board:
         to_check = (row,col)
         
         self.last_selected=None
-        win = False
         
         if self.last_moves.get(to_check, False): # type: ignore
-            self.board[row][col] = 1 if player == 'white' else 2
-            self.board[selected_row][selected_col] = 0  # type: ignore
-            if (player == 'white' and row == 0) or (player == 'black' and row == self.board_size - 1):
-                win = True 
-            return True, win
+            return self.quick_make_move(selected_row, selected_col, row, col, player)
         
         return False, False
         
@@ -69,32 +80,34 @@ class Board:
     
     def get_legal_moves(self, row, col, player):        
         pos = self.board[row][col]
+        start_pos = (row, col) 
         moves = {}
         if  pos == 0:
             return None
         
+        
+        # (row,col) = start_pos
         if pos == 1 and player == 'white':
             if col!=0 and self.board[row-1][col-1]!=1:
-                moves[(row-1,col-1)]=True
+                moves[(row-1,col-1)]=start_pos
             
             if self.board[row-1][col]==0:
-                moves[(row-1,col)]=True
+                moves[(row-1,col)]=start_pos
                 
             if col!=7 and self.board[row-1][col+1]!=1:
-                moves[(row-1,col+1)]=True
+                moves[(row-1,col+1)]=start_pos
 
             return moves
         
         if pos==2 and player =="black":
-            print(row,col,player,pos)
             if col!=0 and self.board[row+1][col-1]!=2:
-                moves[(row+1,col-1)]=True
+                moves[(row+1,col-1)]=start_pos
                 
             if self.board[row+1][col]==0:
-                moves[(row+1,col)]=True
+                moves[(row+1,col)]=start_pos
                 
             if col!=7 and self.board[row+1][col+1]!=2:
-                moves[(row+1,col+1)]=True
+                moves[(row+1,col+1)]=start_pos
             
             return moves
                 

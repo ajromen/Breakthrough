@@ -49,6 +49,11 @@ def main():
                         elif do == 'menu':
                             game_running=False
                             break
+                        
+            if game.ai and game.turn == game.ai.color:
+                redraw_needed, win = game.ai_play() # type: ignore
+                if win:
+                    redraw_needed = True
             
             if redraw_needed: 
                 game.display_board()
