@@ -29,47 +29,42 @@ def main():
         player_color = props['player_color']
         game = Game(opponent, dificulty, player_color, window)
         
-        redraw_needed = True
         game_running = True       
         win = None
+        clicked = False
+        game.display()
         while game_running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     game_running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    redraw_needed, win = game.check_click()
+                    clicked = True
                         
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         do = ui.show_settings()
-                        redraw_needed=True
                         if do == 'exit':
                             return
                         elif do == 'menu':
                             game_running=False
                             break
+                    elif event.key ==pygame.K_z:
+                        game.undo_move()
                         
-            if game.ai and game.turn == game.ai.color:
-                redraw_needed, win = game.ai_play() # type: ignore
-                if win:
-                    redraw_needed = True
+            win = game.make_move(clicked)
+            clicked = False
             
-            if redraw_needed: 
-                game.display_board()
-                game.board.display_last_move()
-                pygame.display.flip()  
-                redraw_needed=False
-                if win:
-                    ui.show_winner(win)
-                    do = ui.show_settings(no_exit=True)
-                    
-                    if do == 'exit':
-                        running = False
-                        game_running = False
-                    elif do == 'menu':
-                        game_running = False
-                        break
+            if win:
+                ui.show_winner(win)
+                do = ui.show_settings(no_exit=True)
+                
+                if do == 'exit':
+                    running = False
+                    game_running = False
+                elif do == 'menu':
+                    game_running = False
+                    break
                 
             
             clock.tick(30)

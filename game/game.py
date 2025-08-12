@@ -1,3 +1,4 @@
+import pygame
 from game import board
 from ui.input_handler import InputHandler
 from game.ai import Ai
@@ -12,15 +13,15 @@ class Game:
         self.piece_selected=False
         ai_color = 'black' if player_color == 'white' else 'white'
         self.ai = Ai(difficulty, ai_color) if self.opponent == "computer" else None
+        self.i=0
     
-    def display_board(self):
-        self.board.display(self.player_color)
         
-    def white_play(self):
-        pass
+    def undo_move(self):# POPRAVI OVO PROTIV KOMPA
+        if not self.board.undo_move():
+            return
+        self.flip_turn()
+        self.display()
         
-    def black_play(self):
-        pass
     
     def flip_turn(self):
         self.turn = "black" if self.turn == "white" else "white"
@@ -29,32 +30,51 @@ class Game:
     
     def ai_play(self):
         self.flip_turn()
-        return self.ai.make_move(self.board) if self.ai else (False, None)
+        return self.ai.make_move(self.board) # type: ignore
     
     def check_click(self):
-        row, col = InputHandler.get_square(self.board.flipped)
-        
-        # print(row, col, self.board.board[row][col],self.board.flipped,self.turn)
-        
-        # for i in range(8):
-        #     print(self.board.board[i])
-                    
+        '''Vraca igraca koji je pobedio'''
+        row, col = InputHandler.get_square(self.board.flipped, self.board.size)
+        if row is None or col is None:
+            return None
         
         if not self.piece_selected:
-            self.piece_selected = self.board.check_legal_moves(row, col, self.turn)
-            return self.piece_selected, None
+            self.check_clicked_square(row, col)
+            return None
+
+        self.piece_selected = False
         
-        
-        self.piece_selected=False
         succ, win = self.board.make_move(row, col, self.turn)
-        
-        if win:
-            return True, self.turn # ako je pobedio vraca True za uspesan potez i igraca koji je pobedio
         
         if succ: 
             self.flip_turn()
-                
-        return True, None
+            self.piece_selected = False
+            
+        self.display()
+            
+        return win
+    
+    
+    def check_clicked_square(self, row, col):
+        self.piece_selected = self.board.check_legal_moves(row, col, self.turn)
+        self.display()
+    
+    def make_move(self, clicked):
+        
+        if clicked:
+            win = self.check_click()
+            return win
+            
+        if self.opponent == "computer" and self.turn == self.ai.color: # type: ignore
+            win = self.ai_play()
+            self.display()
+            return win
         
             
+    def display(self):
+        print(self.i)
+        self.i+=1
+        self.board.display(self.turn)
+        self.board.display_last_move()
+        pygame.display.flip()
                 
