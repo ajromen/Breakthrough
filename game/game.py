@@ -1,5 +1,5 @@
 import pygame
-from game import board
+from game.board import board
 from ui.input_handler import InputHandler
 from game.ai import Ai
 
@@ -13,15 +13,19 @@ class Game:
         self.piece_selected=False
         ai_color = 'black' if player_color == 'white' else 'white'
         self.ai = Ai(difficulty, ai_color) if self.opponent == "computer" else None
-        self.i=0
     
         
     def undo_move(self):# POPRAVI OVO PROTIV KOMPA
         if not self.board.undo_move():
             return
+        
         self.flip_turn()
         self.display()
         
+        if self.opponent == "computer" and not self.board.undo_move():
+            return
+        
+
     
     def flip_turn(self):
         self.turn = "black" if self.turn == "white" else "white"
@@ -72,8 +76,6 @@ class Game:
         
             
     def display(self):
-        print(self.i)
-        self.i+=1
         self.board.display(self.turn)
         self.board.display_last_move()
         pygame.display.flip()

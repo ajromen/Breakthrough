@@ -1,5 +1,5 @@
 import random
-from game.board import Board
+from game.board.board import Board
 
 
 class Ai:
@@ -16,6 +16,6 @@ class Ai:
         random_move = random.choice(list(moves.keys()))
         row, col = random_move[0], random_move[1]
         start_row, start_col = moves[random_move]
-        succ, win = board.quick_make_move(start_row,start_col, row, col, self.color)
+        win = board.quick_make_move(start_row,start_col, row, col, self.color)
         
         return win

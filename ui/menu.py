@@ -224,7 +224,7 @@ class Menu():
                 if clicked:
                     return 'exit'
                 
-            clock.tick(60)
+            clock.tick(30)
             pygame.display.flip()  
             
     def show_winner(self, winner):

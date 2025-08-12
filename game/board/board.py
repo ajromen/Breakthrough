@@ -1,17 +1,18 @@
 import pygame
 
+from enums.piece_color import *
+from game.board.base_board import BaseBoard
 from ui.image_menager import ImageMenager
 from ui import colors
 
-class Board:
+class Board(BaseBoard):
     def __init__(self,window : pygame.Surface, size=8, flipped = False):
+        super().__init__(size)
         self.window = window
-        self.size = size
         self.board = self.create_board(size)
         self.flipped = flipped
         self.last_selected = None
         self.last_moves = None
-        self.undo_stack = []
         
     def create_board(self, size):
         board = []
@@ -19,11 +20,11 @@ class Board:
             row = []
             for j in range(size):
                 if i < 2:
-                    row.append(2)
+                    row.append(PIECE_BLACK)
                 elif i >= size - 2:
-                    row.append(1)
+                    row.append(PIECE_WHITE)
                 else:
-                    row.append(0)
+                    row.append(PIECE_EMPTY)
             board.append(row)
             
         return board
@@ -39,30 +40,10 @@ class Board:
                 else:
                     r, c = i, j
 
-                if self.board[r][c] == 1:
+                if self.board[r][c] == PIECE_WHITE:
                     self.window.blit(ImageMenager.piece_white, (27 + j * 94, 31 + i * 94)) # type: ignore
                 elif self.board[r][c] == 2:
                     self.window.blit(ImageMenager.piece_black, (27 + j * 94, 31 + i * 94)) # type: ignore
-                    
-    def get_all_legal_moves(self, color):
-        moves = {}
-        piece_code = 1 if color == 'white' else 2
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.board[i][j] == piece_code:
-                    legal_moves = self.get_legal_moves(i, j, color)
-                    if legal_moves:
-                        moves.update(legal_moves)
-        return moves
-    
-    def quick_make_move(self,start_row, start_col, row, col, player):
-        self.board[row][col] = 1 if player == 'white' else 2
-        self.board[start_row][start_col] = 0  # type: ignore
-        win = False
-        self.undo_stack.append((start_row, start_col, row, col))
-        if (player == 'white' and row == 0) or (player == 'black' and row == self.size - 1):
-            win = True 
-        return True, win
     
     
     def make_move(self, row, col, player):
@@ -74,49 +55,12 @@ class Board:
         
         self.last_selected=None
         
-        if self.last_moves.get(to_check, False): # type: ignore
-            return self.quick_make_move(selected_row, selected_col, row, col, player)
+        if self.last_moves.get(to_check, False):  # type: ignore
+            return True, self.quick_make_move(selected_row, selected_col, row, col, player)
         
         
-        return False, False
+        return False, None
         
-        
-    
-    def get_legal_moves(self, row, col, player):        
-        pos = self.board[row][col]
-        start_pos = (row, col) 
-        moves = {}
-        if  pos == 0:
-            return None
-        
-        
-        # (row,col) = start_pos
-        if pos == 1 and player == 'white':
-            if col!=0 and self.board[row-1][col-1]!=1:
-                moves[(row-1,col-1)]=start_pos
-            
-            if self.board[row-1][col]==0:
-                moves[(row-1,col)]=start_pos
-                
-            if col!=7 and self.board[row-1][col+1]!=1:
-                moves[(row-1,col+1)]=start_pos
-
-            return moves
-        
-        if pos==2 and player =="black":
-            if col!=0 and self.board[row+1][col-1]!=2:
-                moves[(row+1,col-1)]=start_pos
-                
-            if self.board[row+1][col]==0:
-                moves[(row+1,col)]=start_pos
-                
-            if col!=7 and self.board[row+1][col+1]!=2:
-                moves[(row+1,col+1)]=start_pos
-            
-            return moves
-                
-        return None
-    
         
     def check_legal_moves(self, row, col, player): 
         """Vraca True ako je selektovana figura"""         
@@ -157,8 +101,8 @@ class Board:
         if len(self.undo_stack)==0:
             return False
         
-        start_row, start_col, row, col = self.undo_stack.pop() # type: ignore
-        self.board[row][col] = 0
-        self.board[start_row][start_col] = 1 if self.flipped else 2
+        start_row, start_col, row, col, color, captured_piece = self.undo_stack.pop() # type: ignore
+        self.board[row][col] = captured_piece
+        self.board[start_row][start_col] = PIECE_WHITE if color=="white" else PIECE_BLACK
         
         return True

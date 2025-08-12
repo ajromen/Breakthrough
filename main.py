@@ -9,8 +9,6 @@ pygame.init()
 
 window_size = (800, 800)
 
-
-
 def main():
     window = pygame.display.set_mode(window_size, pygame.NOFRAME)
     pygame.display.set_caption("Breaktrough")
@@ -44,12 +42,13 @@ def main():
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         do = ui.show_settings()
+                        game.display()
                         if do == 'exit':
                             return
-                        elif do == 'menu':
+                        elif do == 'menu': 
                             game_running=False
                             break
-                    elif event.key ==pygame.K_z:
+                    elif event.key == pygame.K_z:
                         game.undo_move()
                         
             win = game.make_move(clicked)
@@ -64,11 +63,9 @@ def main():
                     game_running = False
                 elif do == 'menu':
                     game_running = False
-                    break
-                
+                    break                
             
-            clock.tick(30)
-                  
+            clock.tick(30)                  
 
     pygame.quit()
     
