@@ -22,8 +22,14 @@ class Game:
         self.flip_turn()
         self.display()
         
-        if self.opponent == "computer" and not self.board.undo_move():
+        if not self.opponent == "computer":
             return
+        
+        if not self.board.undo_move():
+            return
+        
+        self.flip_turn()
+        self.display()
         
 
     
