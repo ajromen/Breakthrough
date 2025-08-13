@@ -9,13 +9,13 @@ class Board(BaseBoard):
     def __init__(self,window : pygame.Surface, size=8, flipped = False):
         super().__init__(size)
         self.window = window
-        self.board = self.create_board(size)
+        self.state = self.create_board_state(size)
         self.flipped = flipped
         self.last_selected = None
         self.last_moves = None
         
-    def create_board(self, size):
-        board = []
+    def create_board_state(self, size):
+        state = []
         for i in range(size):
             row = []
             for j in range(size):
@@ -25,9 +25,9 @@ class Board(BaseBoard):
                     row.append(PIECE_WHITE)
                 else:
                     row.append(PIECE_EMPTY)
-            board.append(row)
+            state.append(row)
             
-        return board
+        return state
         
     def display(self,player_color):
         self.window.fill(colors.background)
@@ -40,9 +40,9 @@ class Board(BaseBoard):
                 else:
                     r, c = i, j
 
-                if self.board[r][c] == PIECE_WHITE:
+                if self.state[r][c] == PIECE_WHITE:
                     self.window.blit(ImageMenager.piece_white, (27 + j * 94, 31 + i * 94)) # type: ignore
-                elif self.board[r][c] == 2:
+                elif self.state[r][c] == 2:
                     self.window.blit(ImageMenager.piece_black, (27 + j * 94, 31 + i * 94)) # type: ignore
     
     
@@ -102,7 +102,9 @@ class Board(BaseBoard):
             return False
         
         start_row, start_col, row, col, color, captured_piece = self.undo_stack.pop() # type: ignore
-        self.board[row][col] = captured_piece
-        self.board[start_row][start_col] = PIECE_WHITE if color=="white" else PIECE_BLACK
+        self.state[row][col] = captured_piece
+        self.state[start_row][start_col] = PIECE_WHITE if color=="white" else PIECE_BLACK
         
         return True
+    
+    
