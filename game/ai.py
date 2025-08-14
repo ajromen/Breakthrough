@@ -1,8 +1,13 @@
+import copy
 import random
+import sys
 from game.board.board import Board
 from game.board.simulated_board import SimulatedBoard
 from game.board.eval import Eval
 
+
+MAX_INT = sys.maxsize
+MIN_INT = -sys.maxsize
 
 class Ai:
     def __init__(self, difficulty, color, board: Board):
@@ -29,31 +34,39 @@ class Ai:
         return win
     
     def copy_move(self, board):
-        self.board.state = board.state.copy()
+        self.board.state = copy.deepcopy(board.state)
     
     
     def make_move(self, board: Board):
         self.copy_move(board)
         self.best_move = None
-        self.minimax(self.difficulty, float("-inf"), float("inf"), self.color == 'white')
+        self.minimax(self.difficulty, MIN_INT, MAX_INT, self.color == 'white')
         return board.make_move_from_move(self.best_move)
 
     def minimax(self, depth, alpha, beta, maximizing):
         if depth == 0:
             return self.evaluator.eval(self.board)
+        
+        moves = self.board.get_all_moves_sorted('white' if maximizing else 'black')
+        
+        if not moves:
+            return MAX_INT if maximizing else MIN_INT
 
         if maximizing:
-            max_eval = float('-inf')
-            for move in self.board.get_all_moves_sorted('white'):
+            max_eval = MIN_INT
+            for move in moves:
                 win = self.board.make_move_from_move(move)
                 if win:
-                    return float('inf') - (self.difficulty - depth)
+                    if depth == self.difficulty:
+                        self.best_move = move
+                    self.board.undo_move()
+                    return MAX_INT - (self.difficulty - depth)
                 eval = self.minimax(depth - 1, alpha, beta, False)
                 self.board.undo_move()
 
                 if eval > max_eval:
                     max_eval = eval
-                    if depth == self.difficulty:# and self.color == 'white':  # mozda 
+                    if depth == self.difficulty: # and self.color == 'white':  # mozda 
                         self.best_move = move
 
                 alpha = max(alpha, eval)
@@ -62,17 +75,20 @@ class Ai:
                 
             return max_eval
         else:
-            min_eval = float('inf')
-            for move in self.board.get_all_moves_sorted('black'):
+            min_eval = MAX_INT
+            for move in moves:
                 win = self.board.make_move_from_move(move)
                 if win:
-                    return float('-inf') + (self.difficulty - depth)
+                    if depth == self.difficulty:
+                        self.best_move = move
+                    self.board.undo_move()
+                    return MIN_INT + (self.difficulty - depth)
                 eval = self.minimax(depth - 1, alpha, beta, True)
                 self.board.undo_move()
 
                 if eval < min_eval:
                     min_eval = eval
-                    if depth == self.difficulty:# and self.color == 'black': mozda al vrv ne
+                    if depth == self.difficulty: # and self.color == 'black': mozda al vrv ne
                         self.best_move = move
 
                 beta = min(beta, eval)

@@ -8,7 +8,7 @@ class Game:
         self.opponent = opponent
         self.difficulty = difficulty
         self.player_color = player_color
-        self.board = Board(window, 8, player_color!='white')
+        self.board = Board(window, 4, player_color!='white')
         self.turn = 'white'
         self.piece_selected=False
         ai_color = 'black' if player_color == 'white' else 'white'
