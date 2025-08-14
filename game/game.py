@@ -25,12 +25,12 @@ class Game:
         if not self.ai:
             return
         
-        self.ai.copy_move(self.board) # type: ignore
+        #self.ai.copy_move(self.board) # type: ignore
         
         if not self.board.undo_move():
             return
         
-        self.ai.copy_move(self.board) # type: ignore
+        #self.ai.copy_move(self.board) # type: ignore
         self.flip_turn()
         self.display()
         
@@ -43,7 +43,7 @@ class Game:
     
     def ai_play(self):
         self.flip_turn()
-        return self.ai.make_move_random(self.board) # type: ignore
+        return self.ai.make_move(self.board)
     
     def check_click(self):
         '''Vraca igraca koji je pobedio'''
@@ -61,8 +61,8 @@ class Game:
         
         if succ: 
             self.flip_turn()
-            if self.ai:
-                self.ai.copy_move(self.board) # type: ignore
+            # if self.ai:
+            #     self.ai.copy_move(self.board) # type: ignore
             self.piece_selected = False
             
         self.display()

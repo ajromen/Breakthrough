@@ -1,5 +1,6 @@
 import json
 from enums.piece_color import *
+from game.board.simulated_board import SimulatedBoard
 
 
 class Eval:
@@ -19,15 +20,15 @@ class Eval:
     def __del__(self):
         self.save_weights("./weights.json")
 
-    def eval(self, board):
+    def eval(self, board: SimulatedBoard):
         """+ beli - crni"""
         w = self.weights
         score = 0
         board_state = board.state
         board_size =  board.size
 
-        white_moves = board.get_all_legal_moves('white')
-        black_moves = board.get_all_legal_moves('black')
+        white_moves = board.get_all_moves_sorted('white')
+        black_moves = board.get_all_moves_sorted('black')
         
         for row in range(board.size):
             for col in range(board.size):

@@ -44,6 +44,50 @@ class Board(BaseBoard):
                     self.window.blit(ImageMenager.piece_white, (27 + j * 94, 31 + i * 94)) # type: ignore
                 elif self.state[r][c] == 2:
                     self.window.blit(ImageMenager.piece_black, (27 + j * 94, 31 + i * 94)) # type: ignore
+                    
+    def get_all_legal_moves(self, color):
+        moves = {}
+        piece_code = PIECE_WHITE if color == 'white' else PIECE_BLACK
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.state[i][j] == piece_code:
+                    legal_moves = self.get_legal_moves(i, j, color)
+                    if legal_moves:
+                        moves.update(legal_moves)
+        return moves
+    
+    def get_legal_moves(self, row, col, player):        
+        pos = self.state[row][col]
+        start_pos = (row, col) 
+        moves = {}
+        if  pos == PIECE_EMPTY:
+            return None
+        
+        if pos == PIECE_WHITE and player == 'white':
+            if col!=0 and self.state[row-1][col-1]!=PIECE_WHITE:
+                moves[(row-1,col-1)]=start_pos
+            
+            if self.state[row-1][col]==PIECE_EMPTY:
+                moves[(row-1,col)]=start_pos
+                
+            if col!=self.size-1 and self.state[row-1][col+1]!=PIECE_WHITE:
+                moves[(row-1,col+1)]=start_pos
+
+            return moves
+        
+        if pos==PIECE_BLACK and player =="black":
+            if col!=0 and self.state[row+1][col-1]!=PIECE_BLACK:
+                moves[(row+1,col-1)]=start_pos
+                
+            if self.state[row+1][col]==PIECE_EMPTY:
+                moves[(row+1,col)]=start_pos
+                
+            if col!=self.size-1 and self.state[row+1][col+1]!=PIECE_BLACK:
+                moves[(row+1,col+1)]=start_pos
+            
+            return moves
+                
+        return None
     
     
     def make_move(self, row, col, player):
