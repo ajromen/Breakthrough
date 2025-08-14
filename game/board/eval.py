@@ -36,7 +36,7 @@ class Eval:
                 if piece == PIECE_EMPTY:
                     continue
                 
-                piece_safe = 0
+                defenders = 0
                 att=0
                 
                 if piece == PIECE_WHITE:
@@ -49,13 +49,13 @@ class Eval:
                     #PIECE SAFETY
                     if row!=board_size-1:
                         if col!=0:
-                            piece_safe+=int(board_state[row+1][col-1]==PIECE_WHITE)
-                            score+=(1 if piece_safe else -1)*w['piece_safety']
+                            defenders+=int(board_state[row+1][col-1]==PIECE_WHITE)
+                            score+=(1 if defenders else -1)*w['piece_safety']
                             
                             
                         if col!=board_size-1:
                             safe_right = int(board_state[row+1][col+1]==PIECE_WHITE)
-                            piece_safe += safe_right
+                            defenders += safe_right
                             score+=(1 if safe_right else -1)*w['piece_safety']
                         
                     #ATTACKS PROSIRI NA JOS JEDAN NIVO
@@ -65,7 +65,7 @@ class Eval:
                     if col!=board_size-1:
                         att+=int(board_state[row-1][col+1]==PIECE_BLACK)
                     
-                    score+=(piece_safe-att)*w["att/def"]
+                    score+=(defenders-att)*w["att/def"]
                     
                         
                 elif piece == PIECE_BLACK:
@@ -77,12 +77,13 @@ class Eval:
                     #PIECE SAFETY
                     if row!=0:
                         if col!=0:
-                            piece_safe+=int(board_state[row-1][col-1]==PIECE_BLACK)
-                            score-=(1 if piece_safe else -1)*w['piece_safety']
+                            defenders+=int(board_state[row-1][col-1]==PIECE_BLACK)
+                            score-=(1 if defenders else -1)*w['piece_safety']
+                            
                             
                         if col!=board_size-1:
                             safe_right = int(board_state[row-1][col+1]==PIECE_BLACK)
-                            piece_safe += safe_right
+                            defenders += safe_right
                             score-=(1 if safe_right else -1)*w['piece_safety']
                             
                     #ATTACKS 
@@ -92,10 +93,9 @@ class Eval:
                     if col!=board_size-1:
                         att+=int(board_state[row+1][col+1]==PIECE_WHITE)
                         
-                    score-=(piece_safe-att)*w["att/def"]
+                    score-=(defenders-att)*w["att/def"]
                             
                         
-                    
                     
         #MOBILITY  
         score += (len(white_moves) - len(black_moves)) * w['mobility']

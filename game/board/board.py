@@ -96,15 +96,6 @@ class Board(BaseBoard):
         self.display_given_moves(self.last_selected[0],self.last_selected[1],self.last_moves)
         
 
-    def undo_move(self):
-        """Vraca True ako je uspeo da undo"""
-        if len(self.undo_stack)==0:
-            return False
-        
-        start_row, start_col, row, col, color, captured_piece = self.undo_stack.pop() # type: ignore
-        self.state[row][col] = captured_piece
-        self.state[start_row][start_col] = PIECE_WHITE if color=="white" else PIECE_BLACK
-        
-        return True
+    
     
     

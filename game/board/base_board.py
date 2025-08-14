@@ -32,7 +32,7 @@ class BaseBoard:
             if self.state[row-1][col]==PIECE_EMPTY:
                 moves[(row-1,col)]=start_pos
                 
-            if col!=7 and self.state[row-1][col+1]!=PIECE_WHITE:
+            if col!=self.size-1 and self.state[row-1][col+1]!=PIECE_WHITE:
                 moves[(row-1,col+1)]=start_pos
 
             return moves
@@ -44,7 +44,7 @@ class BaseBoard:
             if self.state[row+1][col]==PIECE_EMPTY:
                 moves[(row+1,col)]=start_pos
                 
-            if col!=7 and self.state[row+1][col+1]!=PIECE_BLACK:
+            if col!=self.size-1 and self.state[row+1][col+1]!=PIECE_BLACK:
                 moves[(row+1,col+1)]=start_pos
             
             return moves
@@ -78,3 +78,14 @@ class BaseBoard:
         score += len(white_moves) - len(black_moves)
         
         return score
+    
+    def undo_move(self):
+        """Vraca True ako je uspeo da undo"""
+        if len(self.undo_stack)==0:
+            return False
+        
+        start_row, start_col, row, col, color, captured_piece = self.undo_stack.pop() # type: ignore
+        self.state[row][col] = captured_piece
+        self.state[start_row][start_col] = PIECE_WHITE if color=="white" else PIECE_BLACK
+        
+        return True

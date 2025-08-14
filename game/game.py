@@ -43,7 +43,7 @@ class Game:
     
     def ai_play(self):
         self.flip_turn()
-        return self.ai.make_move(self.board) # type: ignore
+        return self.ai.make_move_random(self.board) # type: ignore
     
     def check_click(self):
         '''Vraca igraca koji je pobedio'''
