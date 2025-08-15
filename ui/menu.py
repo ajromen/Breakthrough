@@ -23,7 +23,10 @@ class Menu():
             return settings
         
         dificulty = self.choose_dificulty()
-        player_color = self.choose_color()
+        if opponent == 'computer_vs_computer':
+            player_color = 'white'
+        else:
+            player_color = self.choose_color()
         
         settings['opponent']=opponent
         settings['dificulty']=dificulty
@@ -32,12 +35,15 @@ class Menu():
         return settings
 
     def choose_opponent(self):
-        pos1 = (83, 256)
-        pos2 = (83, 256 + 159)
-        pvp_rect = pygame.Rect(83, 256, 635, 111)
-        pvc_rect = pygame.Rect(83, 256 + 159, 635, 111)
+        pos1 = (83, 201)
+        pos2 = (83, 344)
+        pos3 = (83, 487)
+        pvp_rect = pygame.Rect(83, pos1[1], 635, 111)
+        pvc_rect = pygame.Rect(83, pos2[1], 635, 111)
+        cvc_rect = pygame.Rect(83, pos3[1], 635, 111)
         running = True
         selected = None
+        options = ['player', 'computer', 'computer_vs_computer']
         while running:
             clicked = False
             pygame.display.flip()  
@@ -53,9 +59,15 @@ class Menu():
                             continue
                         return selected
                     elif event.key == pygame.K_UP:
-                        selected = 'player'
+                        if selected is None:
+                            selected = 'player'
+                        else:
+                            selected = options[(options.index(selected) - 1) % len(options)]
                     elif event.key == pygame.K_DOWN:
-                        selected = 'computer'
+                        if selected is None:
+                            selected = 'computer_vs_computer'
+                        else:
+                            selected = options[(options.index(selected) + 1) % len(options)]
                     elif event.key == pygame.K_ESCAPE:
                         do=self.show_settings()
                         if do == 'exit':
@@ -65,11 +77,14 @@ class Menu():
             
             self.window.blit(ImageMenager.pvp, pos1) # type: ignore
             self.window.blit(ImageMenager.pvc, pos2) # type: ignore
+            self.window.blit(ImageMenager.cvc, pos3) # type: ignore
             
             if selected == 'player':
                 pygame.draw.rect(self.window, colors.highlight, pvp_rect, 2, border_radius=5)
             elif selected == 'computer':
                 pygame.draw.rect(self.window, colors.highlight, pvc_rect, 2, border_radius=5)
+            elif selected == 'computer_vs_computer':
+                pygame.draw.rect(self.window, colors.highlight, cvc_rect, 2, border_radius=5)
             
             
             if InputHandler.check_mouse_hover(pvp_rect):
@@ -80,6 +95,10 @@ class Menu():
                 pygame.draw.rect(self.window, colors.selected, pvc_rect, 2, border_radius=5)
                 if clicked:
                     return 'computer'
+            if InputHandler.check_mouse_hover(cvc_rect):
+                pygame.draw.rect(self.window, colors.selected, cvc_rect, 2, border_radius=5)
+                if clicked:
+                    return 'computer_vs_computer'
             
         return 'player'
     

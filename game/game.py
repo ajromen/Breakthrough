@@ -4,18 +4,19 @@ from ui.input_handler import InputHandler
 from game.ai import Ai
 
 class Game:
-    def __init__(self, opponent, difficulty, player_color,window):
+    def __init__(self, opponent, difficulty, player_color,window, size=8):
         self.opponent = opponent
         self.difficulty = difficulty
         self.player_color = player_color
-        self.board = Board(window, 4, player_color!='white')
+        self.board = Board(window, size, player_color!='white')
         self.turn = 'white'
         self.piece_selected=False
         ai_color = 'black' if player_color == 'white' else 'white'
-        self.ai = Ai(difficulty, ai_color, self.board) if self.opponent == "computer" else None
+        self.ai = Ai(difficulty, ai_color, self.board) if self.opponent == "computer" or self.opponent=='computer_vs_computer' else None
+        self.ai2 = Ai(difficulty, player_color, self.board) if self.opponent == "computer_vs_computer" else None
     
         
-    def undo_move(self):# POPRAVI OVO PROTIV KOMPA
+    def undo_move(self):
         if not self.board.undo_move():
             return
         
@@ -25,12 +26,9 @@ class Game:
         if not self.ai:
             return
         
-        #self.ai.copy_move(self.board) # type: ignore
-        
         if not self.board.undo_move():
             return
         
-        #self.ai.copy_move(self.board) # type: ignore
         self.flip_turn()
         self.display()
         
@@ -41,9 +39,9 @@ class Game:
         if self.opponent == "player":
             self.board.flipped = not self.board.flipped
     
-    def ai_play(self):
+    def ai_play(self,ai:Ai):
         self.flip_turn()
-        return self.ai.make_move(self.board)
+        return ai.make_move(self.board)
     
     def check_click(self):
         '''Vraca igraca koji je pobedio'''
@@ -61,8 +59,6 @@ class Game:
         
         if succ: 
             self.flip_turn()
-            # if self.ai:
-            #     self.ai.copy_move(self.board) # type: ignore
             self.piece_selected = False
             
         self.display()
@@ -75,16 +71,19 @@ class Game:
         self.display()
     
     def make_move(self, clicked):
-        
         if clicked:
             win = self.check_click()
             return win
-            
-        if self.ai and self.turn == self.ai.color: # type: ignore
-            win = self.ai_play()
+        
+        if self.ai2 and self.turn == self.player_color:
+            win = self.ai_play(self.ai2)
             self.display()
             return win
-        
+            
+        if self.ai and self.turn == self.ai.color: 
+            win = self.ai_play(self.ai)
+            self.display()
+            return win        
             
     def display(self):
         self.board.display(self.turn)

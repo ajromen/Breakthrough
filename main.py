@@ -25,7 +25,7 @@ def main():
         opponent = props['opponent']
         dificulty = props['dificulty']
         player_color = props['player_color']
-        game = Game(opponent, dificulty, player_color, window)
+        game = Game(opponent, dificulty, player_color, window,8)
         
         game_running = True       
         win = None

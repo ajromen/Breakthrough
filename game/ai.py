@@ -19,7 +19,7 @@ class Ai:
         
     
     def make_move_random(self, board: Board):
-        print(self.evaluator.eval(self.board))  # type: ignore
+        print(self.evaluator.eval(self.board),self.color)
         moves = board.get_all_legal_moves(self.color)
         
         if not moves:
@@ -45,7 +45,7 @@ class Ai:
 
     def minimax(self, depth, alpha, beta, maximizing):
         if depth == 0:
-            return self.evaluator.eval(self.board)
+            return self.evaluator.eval(self.board, maximizing)
         
         moves = self.board.get_all_moves_sorted('white' if maximizing else 'black')
         
@@ -88,7 +88,7 @@ class Ai:
 
                 if eval < min_eval:
                     min_eval = eval
-                    if depth == self.difficulty: # and self.color == 'black': mozda al vrv ne
+                    if depth == self.difficulty:
                         self.best_move = move
 
                 beta = min(beta, eval)

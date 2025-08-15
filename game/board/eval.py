@@ -6,22 +6,30 @@ from game.board.simulated_board import SimulatedBoard
 class Eval:
     def __init__(self):
         self.weights = {        
-            "material": 5,
-            "mobility": 1,
+            "material": 10,
+            "mobility": 2,
             "advancment": 15,
-            "piece_safety": 20,
+            "piece_safety": 10,
             "att/def": 10,#razlika izmedju napadaca i odbranitelja
             "passed_piece": 15,
             "wining_path": 100,
         }
         #self.load_weights("./weights.json")
-        
+        self.positions={}
         
     def __del__(self):
         self.save_weights("./weights.json")
+    
+    def board_to_key(self,state:list[list[int]],is_white=True):
+        return (tuple(tuple(row) for row in state),is_white)
+    
 
-    def eval(self, board: SimulatedBoard):
+    def eval(self, board: SimulatedBoard,is_white):
         """+ beli - crni"""
+        key = self.board_to_key(board.state, is_white)
+        if key in self.positions:
+            return self.positions[key]
+        
         w = self.weights
         score = 0
         board_state = board.state
@@ -100,6 +108,7 @@ class Eval:
                     
         #MOBILITY  
         score += (len(white_moves) - len(black_moves)) * w['mobility']
+        self.positions[key]=score
         
         return score
 

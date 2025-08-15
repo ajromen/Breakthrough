@@ -27,6 +27,7 @@ class ImageMenager:
         ImageMenager.next = pygame.image.load("assets/next.png").convert_alpha()
         ImageMenager.pvp = pygame.image.load("assets/pvp.png").convert_alpha()
         ImageMenager.pvc = pygame.image.load("assets/pvc.png").convert_alpha()
+        ImageMenager.cvc = pygame.image.load("assets/cvc.png").convert_alpha()
         ImageMenager.start = pygame.image.load("assets/start.png").convert_alpha()
         ImageMenager.settings = pygame.image.load("assets/pause.png").convert_alpha()
         ImageMenager.settings_no_shadow = pygame.image.load("assets/pause_no_shadow.png").convert_alpha()

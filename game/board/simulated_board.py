@@ -49,7 +49,7 @@ class SimulatedBoard(BaseBoard):
                 moves.append((row,col,row+1,col,'black'))
                 
             if col!=self.size-1 and self.state[row+1][col+1]!=PIECE_BLACK:
-                moves.append((row,col,row+1,col-1,'black'))
+                moves.append((row,col,row+1,col+1,'black'))
             
             return moves
                 
