@@ -5,6 +5,7 @@ from game.board.simulated_board import SimulatedBoard
 
 class Eval:
     def __init__(self):
+        
         self.weights = {        
             "material": 10,
             "mobility": 2,
@@ -14,6 +15,7 @@ class Eval:
             "passed_piece": 15,
             "wining_path": 100,
         }
+
         #self.load_weights("./weights.json")
         self.positions={}
         
@@ -59,22 +61,37 @@ class Eval:
                     if row!=board_size-1:
                         if col!=0:
                             defenders+=int(board_state[row+1][col-1]==PIECE_WHITE)
-                            score+=(1 if defenders else -1)*w['piece_safety']
-                            
                             
                         if col!=board_size-1:
-                            safe_right = int(board_state[row+1][col+1]==PIECE_WHITE)
-                            defenders += safe_right
-                            score+=(1 if safe_right else -1)*w['piece_safety']
+                            defenders += int(board_state[row+1][col+1]==PIECE_WHITE)
+                            
+                        score += defenders * w['piece_safety']
                         
-                    #ATTACKS PROSIRI NA JOS JEDAN NIVO
+                        if defenders == 0:
+                            score -= w['piece_safety']
+                        
+                    #ATTACKS 
                     if col!=0:
                         att+=int(board_state[row-1][col-1]==PIECE_BLACK)
+                        blacks_defenders = 0
+                        if row>1 and att==1:
+                            if col>1:
+                                blacks_defenders += int(board_state[row-2][col-2]==PIECE_BLACK)
+                                
+                            blacks_defenders += int(board_state[row-2][col]==PIECE_BLACK)
+                        score+=(defenders-blacks_defenders)*w['att/def']
+                        
                     
                     if col!=board_size-1:
+                        att=0
                         att+=int(board_state[row-1][col+1]==PIECE_BLACK)
+                        blacks_defenders=0
+                        if row>1 and att==1:
+                            if col<board_size-2:
+                                blacks_defenders+=int(board_state[row-2][col+2]==PIECE_BLACK)
+                            blacks_defenders+=int(board_state[row-2][col]==PIECE_BLACK)
+                        score+=(defenders-blacks_defenders)*w['att/def']
                     
-                    score+=(defenders-att)*w["att/def"]
                     
                         
                 elif piece == PIECE_BLACK:
@@ -82,28 +99,42 @@ class Eval:
                     
                     #ADVANCMENT                    
                     score-=row*w["advancment"]
-                    
+                            
                     #PIECE SAFETY
                     if row!=0:
                         if col!=0:
                             defenders+=int(board_state[row-1][col-1]==PIECE_BLACK)
-                            score-=(1 if defenders else -1)*w['piece_safety']
-                            
                             
                         if col!=board_size-1:
-                            safe_right = int(board_state[row-1][col+1]==PIECE_BLACK)
-                            defenders += safe_right
-                            score-=(1 if safe_right else -1)*w['piece_safety']
+                            defenders += int(board_state[row-1][col+1]==PIECE_BLACK)
                             
+                        score -= defenders * w['piece_safety']
+                        
+                        if defenders == 0:
+                            score += w['piece_safety']             
+                    
+                    
                     #ATTACKS 
                     if col!=0:
                         att+=int(board_state[row+1][col-1]==PIECE_WHITE)
+                        white_defenders = 0
+                        if row<board_size-2 and att==1:
+                            if col>1:
+                                white_defenders += int(board_state[row+2][col-2]==PIECE_WHITE)
+                                
+                            white_defenders += int(board_state[row+2][col]==PIECE_WHITE)
+                        score-=(defenders-white_defenders)*w['att/def']
+                        
                     
                     if col!=board_size-1:
+                        att=0
                         att+=int(board_state[row+1][col+1]==PIECE_WHITE)
-                        
-                    score-=(defenders-att)*w["att/def"]
-                            
+                        white_defenders=0
+                        if row<board_size-2 and att==1:
+                            if col<board_size-2:
+                                white_defenders+=int(board_state[row+2][col+2]==PIECE_WHITE)
+                            white_defenders+=int(board_state[row+2][col]==PIECE_WHITE)
+                        score-=(defenders-white_defenders)*w['att/def']          
                         
                     
         #MOBILITY  
