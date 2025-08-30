@@ -4,14 +4,13 @@ from game.board.simulated_board import SimulatedBoard
 
 
 class Eval:
-    def __init__(self):
-        
+    def __init__(self):        
         self.weights = {        
-            "material": 10,
+            "material": 15,
             "mobility": 2,
-            "advancment": 15,
+            "advancment": 30,
             "piece_safety": 10,
-            "att/def": 10,#razlika izmedju napadaca i odbranitelja
+            "att/def": 15,#razlika izmedju broja napadaca i odbranitelja,
             "passed_piece": 15,
             "wining_path": 100,
         }
@@ -69,7 +68,8 @@ class Eval:
                         
                         if defenders == 0:
                             score -= w['piece_safety']
-                        
+                            
+
                     #ATTACKS 
                     if col!=0:
                         att+=int(board_state[row-1][col-1]==PIECE_BLACK)
